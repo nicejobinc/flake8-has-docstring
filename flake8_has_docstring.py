@@ -3,7 +3,7 @@ from typing import Iterable, Any
 
 ERROR_CODE = "DOC001"
 CHECK = "missing docstring"
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 
 class DocstringChecker(ast.NodeVisitor):
