@@ -1,9 +1,9 @@
 import ast
-from typing import Iterable, Any
+from typing import Any, Iterable
 
 ERROR_CODE = "DOC001"
 CHECK = "missing docstring"
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 
 
 class DocstringChecker(ast.NodeVisitor):
@@ -16,6 +16,10 @@ class DocstringChecker(ast.NodeVisitor):
         if isinstance(node.returns, ast.Name) and node.returns.id.endswith("Mock"):
             return
 
+        # guard 2: if function is a dunder method, don't check for docstring
+        if node.name.startswith("__") and node.name.endswith("__"):
+            return
+
         if ast.get_docstring(node) is None:
             self.errors.append(
                 (
@@ -24,7 +28,6 @@ class DocstringChecker(ast.NodeVisitor):
                     f"{ERROR_CODE} Missing docstring for function '{node.name}'",
                 )
             )
-
 
 
 class Plugin:
