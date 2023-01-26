@@ -62,13 +62,14 @@ def test_eligible_method_has_no_docstring() -> None:
     assert result == expected
 
 
-def test_function_returning_mock_has_no_docstring() -> None:
+def test_pytest_fixture_has_no_docstring() -> None:
     source = inspect.cleandoc(
         """
-        from unittest.mock import Mock
+        import pytest
 
-        def f() -> Mock:
-            return Mock()
+        @pytest.fixture
+        def f() -> Table:
+            return Table()
     """
     )
     plugin = Plugin(ast.parse(source))
