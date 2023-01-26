@@ -10,4 +10,5 @@ There are no configuration options at this time.
 
 The following functions are currently unchecked:
 
-- Functions whose return type is a Mock: meant to catch pytest fixtures, for which docstrings are redundant.
+- Functions which are decorated with `@pytest.fixture`.
+- Functions which are decorated with `@typing.overload`.

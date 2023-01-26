@@ -3,7 +3,7 @@ from typing import Any, Iterable
 
 ERROR_CODE = "DOC001"
 CHECK = "missing docstring"
-VERSION = "0.1.3"
+VERSION = "0.1.4"
 
 
 class DocstringChecker(ast.NodeVisitor):
@@ -21,11 +21,16 @@ class DocstringChecker(ast.NodeVisitor):
             for decorator in node.decorator_list
         ):
             return
-        if isinstance(node.returns, ast.Name) and node.returns.id.endswith("Mock"):
-            return
 
         # guard 2: if function is a dunder method, don't check for docstring
         if node.name.startswith("__") and node.name.endswith("__"):
+            return
+
+        # guard 3: if function has an overload decorator, don't check for docstring
+        if any(
+            isinstance(decorator, ast.Name) and decorator.id == "overload"
+            for decorator in node.decorator_list
+        ):
             return
 
         if ast.get_docstring(node) is None:

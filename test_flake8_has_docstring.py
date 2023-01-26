@@ -90,3 +90,23 @@ def test_dunder_method_has_no_docstring() -> None:
     result = list(plugin.run())
 
     assert result == []
+
+
+def test_overload_has_no_docstring() -> None:
+    source = inspect.cleandoc(
+        """
+        from typing import overload
+
+        @overload
+        def f() -> int:
+            ...
+
+        @overload
+        def f() -> str:
+            ...
+    """
+    )
+    plugin = Plugin(ast.parse(source))
+    result = list(plugin.run())
+
+    assert result == []
