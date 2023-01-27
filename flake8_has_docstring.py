@@ -3,7 +3,7 @@ from typing import Any, Iterable
 
 ERROR_CODE = "DOC001"
 CHECK = "missing docstring"
-VERSION = "0.1.4"
+VERSION = "0.1.5"
 
 
 class DocstringChecker(ast.NodeVisitor):
@@ -14,10 +14,19 @@ class DocstringChecker(ast.NodeVisitor):
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         # guard 1: if function is a pytest fixture, don't check for docstring
         if any(
-            isinstance(decorator, ast.Attribute)
-            and decorator.attr == "fixture"
-            and isinstance(decorator.value, ast.Name)
-            and decorator.value.id == "pytest"
+            (
+                isinstance(decorator, ast.Attribute)
+                and decorator.attr == "fixture"
+                and isinstance(decorator.value, ast.Name)
+                and decorator.value.id == "pytest"
+            )
+            or (
+                isinstance(decorator, ast.Call)
+                and isinstance(decorator.func, ast.Attribute)
+                and decorator.func.attr == "fixture"
+                and isinstance(decorator.func.value, ast.Name)
+                and decorator.func.value.id == "pytest"
+            )
             for decorator in node.decorator_list
         ):
             return

@@ -78,6 +78,22 @@ def test_pytest_fixture_has_no_docstring() -> None:
     assert result == []
 
 
+def test_scoped_pytest_fixture_has_no_docstring() -> None:
+    source = inspect.cleandoc(
+        """
+        import pytest
+
+        @pytest.fixture(scope="session")
+        def f() -> Table:
+            return Table()
+    """
+    )
+    plugin = Plugin(ast.parse(source))
+    result = list(plugin.run())
+
+    assert result == []
+
+
 def test_dunder_method_has_no_docstring() -> None:
     source = inspect.cleandoc(
         """
