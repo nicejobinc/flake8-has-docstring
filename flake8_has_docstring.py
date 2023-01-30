@@ -3,7 +3,7 @@ from typing import Any, Iterable
 
 ERROR_CODE = "DOC001"
 CHECK = "missing docstring"
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 
 
 class DocstringChecker(ast.NodeVisitor):
@@ -11,7 +11,7 @@ class DocstringChecker(ast.NodeVisitor):
         super().__init__(*args, **kwargs)
         self.errors: list[tuple[int, int, str]] = []
 
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+    def function_visitor(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
         # guard 1: if function is a pytest fixture, don't check for docstring
         if any(
             (
@@ -50,6 +50,12 @@ class DocstringChecker(ast.NodeVisitor):
                     f"{ERROR_CODE} Missing docstring for function '{node.name}'",
                 )
             )
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        self.function_visitor(node)
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> Any:
+        return self.function_visitor(node)
 
 
 class Plugin:

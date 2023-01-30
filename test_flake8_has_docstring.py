@@ -62,6 +62,19 @@ def test_eligible_method_has_no_docstring() -> None:
     assert result == expected
 
 
+def test_async_function_has_no_docstring() -> None:
+    source = inspect.cleandoc(
+        """
+        async def f() -> None:
+            return 0
+    """
+    )
+    plugin = Plugin(ast.parse(source))
+    result = list(plugin.run())
+
+    assert result == [(1, 0, "DOC001 Missing docstring for function 'f'", "")]
+
+
 def test_pytest_fixture_has_no_docstring() -> None:
     source = inspect.cleandoc(
         """
