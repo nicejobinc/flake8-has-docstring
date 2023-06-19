@@ -8,7 +8,7 @@ with open("README.md") as f:
 
 setup(
     name="flake8-has-docstring",
-    version="0.1.6",
+    version="0.1.7",
     python_requires=">=3.10",
     install_requires=install_requires,
     py_modules=["flake8_has_docstring"],
